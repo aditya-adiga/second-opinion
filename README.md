@@ -50,6 +50,16 @@ Open [http://localhost:3000](http://localhost:3000).
 No `.env` file or API key needed — the app uses whatever `claude` auth is already set up on
 the machine running it.
 
+### Running it as a desktop app instead
+
+```bash
+npm run electron
+```
+
+A thin wrapper — Electron launches the same `next dev` server in the background and opens a
+native window pointed at it. No code changes from the web version; same `claude` CLI
+requirement (and the same single-machine-only caveat below) still applies.
+
 ## Project structure
 
 ```
@@ -58,12 +68,15 @@ app/api/analyze/route.ts the only API route — runs the claude CLI, returns str
 lib/schema.ts             the shared Zod schema (+ mirrored JSON Schema for --json-schema)
 lib/claude-cli.ts         the claude CLI subprocess wrapper: temp file, system prompt, parsing
 components/FairChart.tsx  renders one chart spec via vega-embed, enforces the zero-baseline rule
+electron/main.js          the desktop wrapper: launches next dev, opens a window pointed at it
 ```
 
 ## Notes
 
 - This is a local-dev tool, not something meant to be deployed as-is — it depends on an
-  interactively-authenticated CLI on the machine it runs on, not a server-side credential.
+  interactively-authenticated CLI on the machine it runs on, not a server-side credential. The
+  Electron wrapper doesn't change this: it's a packaging convenience for one machine, not a way
+  to ship the app to other people without them having their own `claude` CLI set up too.
 - Uploaded images are written to a short-lived `.tmp-uploads/` folder (git-ignored) inside the
   project for the duration of one request, then deleted.
 - Values Claude couldn't read directly (no printed numbers) are visually estimated and flagged

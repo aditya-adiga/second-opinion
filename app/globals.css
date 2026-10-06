@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+:root {
+  --desk: #bfd9d2;
+  --paper: #fbf7ec;
+  --panel: #f1ead9;
+  --ink: #2e2b24;
+  --ink-soft: #6c6354;
+  --line: #ddd0ae;
+  --accent: #3f6e66;
+  --accent-soft: #dcebe6;
+  --warm: #bd8046;
+  --warm-soft: #f2e3cc;
+  --rose: #a85c45;
+  --rose-soft: #f1e0d7;
+}
+
+@theme inline {
+  --color-desk: var(--desk);
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-warm: var(--warm);
+  --color-warm-soft: var(--warm-soft);
+  --color-rose: var(--rose);
+  --color-rose-soft: var(--rose-soft);
+  --font-display: var(--font-fraunces);
+  --font-body: var(--font-source-serif);
+}
+
+body {
+  background: var(--desk);
+  color: var(--ink);
+  font-family: var(--font-body), Georgia, serif;
+}

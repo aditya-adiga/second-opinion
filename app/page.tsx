@@ -12,6 +12,7 @@ export default function Home() {
   const [result, setResult] = useState<ChartExtraction | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -47,6 +48,13 @@ export default function Home() {
     setFile(selected);
     setResult(null);
     setError(null);
+    // Object URLs are created/revoked right here, in response to the actual user action
+    // (pick/drop/remove) rather than via a useEffect watching `file` — a plain state update
+    // plus a side effect, not something that needs "synchronizing" after the fact.
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return selected ? URL.createObjectURL(selected) : null;
+    });
   }
 
   function handleDrop(e: React.DragEvent<HTMLLabelElement>) {
@@ -54,6 +62,13 @@ export default function Home() {
     setDragActive(false);
     const dropped = e.dataTransfer.files?.[0];
     if (dropped) handleFileChange(dropped);
+  }
+
+  function handleRemoveFile(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    handleFileChange(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   }
 
   return (
@@ -88,36 +103,58 @@ export default function Home() {
                 }}
                 onDragLeave={() => setDragActive(false)}
                 onDrop={handleDrop}
-                className={`flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed px-4 py-7 text-center cursor-pointer transition-colors ${
+                className={`relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed text-center cursor-pointer transition-colors ${
+                  file ? "p-2" : "px-4 py-7"
+                } ${
                   dragActive
                     ? "border-accent bg-accent-soft"
                     : "border-line bg-panel hover:border-accent/50 hover:bg-accent-soft/40"
                 }`}
               >
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-ink-soft"
-                  aria-hidden="true"
-                >
-                  <path d="M12 16V4M12 4 7 9M12 4l5 5" />
-                  <path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16" />
-                </svg>
-                {file ? (
-                  <span className="text-sm font-medium text-ink max-w-full truncate px-2">
-                    {file.name}
-                  </span>
+                {file && previewUrl ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element -- local blob preview, not an optimizable remote asset */}
+                    <img
+                      src={previewUrl}
+                      alt={file.name}
+                      className="max-h-36 w-auto max-w-full rounded-md object-contain"
+                    />
+                    <span className="text-xs text-ink-soft truncate max-w-full px-2">
+                      {file.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleRemoveFile}
+                      aria-label="Remove image"
+                      className="absolute top-1.5 right-1.5 flex items-center justify-center w-6 h-6 rounded-full bg-paper/90 text-ink-soft border border-line hover:text-rose hover:border-rose/40 transition-colors"
+                    >
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                        <path d="M6 6l12 12M18 6 6 18" />
+                      </svg>
+                    </button>
+                  </>
                 ) : (
-                  <span className="text-sm text-ink-soft">
-                    <span className="text-accent font-medium">Click to upload</span> or drag and
-                    drop
-                  </span>
+                  <>
+                    <svg
+                      width="22"
+                      height="22"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-ink-soft"
+                      aria-hidden="true"
+                    >
+                      <path d="M12 16V4M12 4 7 9M12 4l5 5" />
+                      <path d="M4 16v2.5A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5V16" />
+                    </svg>
+                    <span className="text-sm text-ink-soft">
+                      <span className="text-accent font-medium">Click to upload</span> or drag and
+                      drop
+                    </span>
+                  </>
                 )}
               </label>
               <input

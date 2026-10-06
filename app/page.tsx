@@ -179,7 +179,7 @@ export default function Home() {
                 value={context}
                 onChange={(e) => setContext(e.target.value)}
                 rows={3}
-                placeholder="e.g. this is from a marketing deck, focus on the axis, or the real axis min is 50 — anything that'd help"
+                placeholder="e.g. I'm trying to make sense of the sales trend, this is from a marketing deck, or the real axis min is 50"
                 className="block w-full rounded-lg border border-line bg-panel px-4 py-2.5 text-sm text-ink placeholder:text-ink-soft/60 focus:outline-none focus:ring-2 focus:ring-accent/40 focus:border-accent"
               />
             </div>

@@ -26,6 +26,10 @@ const DataRowSchema = z.record(
 
 export const ChartSpecSchema = z.object({
   mark: z.enum(CHART_MARKS),
+  // Extra Vega-Lite mark-level properties beyond just the mark type — whatever the chart
+  // actually calls for (e.g. {innerRadius: 60} is what turns an "arc" into a donut rather
+  // than a solid pie). Not a fixed list to pick from; optional, omit for a plain mark.
+  markProps: z.record(z.string(), z.unknown()).optional(),
   title: z.string(),
   // Inline tabular data: each row's keys are the field names referenced by `encoding` — e.g.
   // [{"product": "A", "value": 82}, {"product": "B", "value": 100}]. Not constrained to a
@@ -92,6 +96,12 @@ export const CHART_EXTRACTION_JSON_SCHEMA = {
         type: "object",
         properties: {
           mark: { type: "string", enum: [...CHART_MARKS] },
+          markProps: {
+            type: "object",
+            description:
+              'Optional extra Vega-Lite mark-level properties beyond the mark type itself — any that genuinely fit, not a fixed set. For example, mark "arc" draws a solid pie by default; {"innerRadius": 60} is what makes it a donut instead. Omit entirely for a plain mark.',
+            additionalProperties: true,
+          },
           title: { type: "string" },
           data: {
             type: "array",

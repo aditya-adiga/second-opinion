@@ -62,7 +62,7 @@ export default function FairChart({ chart }: { chart: ChartSpec }) {
       background: "transparent",
       title: { text: chart.title, color: INK, fontSize: 14, fontWeight: 600 },
       data: { values: chart.data },
-      mark: { type: chart.mark, tooltip: true },
+      mark: { type: chart.mark, tooltip: true, ...chart.markProps },
       encoding: withHonestScales(chart),
       config: {
         font: "system-ui, sans-serif",

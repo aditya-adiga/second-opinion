@@ -54,9 +54,15 @@ export default function FairChart({ chart }: { chart: ChartSpec }) {
     let view: Result["view"] | undefined;
     setRenderError(null);
 
+    // Measured directly rather than Vega-Lite's own `width: "container"` + ResizeObserver —
+    // that indirection is a known source of flaky sizing in flex/grid layouts (can measure 0,
+    // or a stale/pre-layout width, before the surrounding grid has settled), which is the more
+    // likely cause of charts overflowing their panel than anything in the spec itself.
+    const measuredWidth = Math.max(200, Math.floor(container.getBoundingClientRect().width));
+
     const spec = {
       $schema: "https://vega.github.io/schema/vega-lite/v5.json",
-      width: "container",
+      width: measuredWidth,
       height: 260,
       autosize: { type: "fit", contains: "padding" },
       background: "transparent",
@@ -75,7 +81,17 @@ export default function FairChart({ chart }: { chart: ChartSpec }) {
           labelFontSize: 10,
           titleFontSize: 10,
         },
-        legend: { labelColor: INK_SOFT, titleColor: INK_SOFT, labelFontSize: 10, titleFontSize: 10 },
+        legend: {
+          // A right-side legend (Vega-Lite's default) is drawn as extra width *beyond* the
+          // container, not inside it — easy to overflow, especially on arc/pie charts and
+          // anything with a color legend. Bottom-oriented legends wrap within the given width
+          // instead.
+          orient: "bottom",
+          labelColor: INK_SOFT,
+          titleColor: INK_SOFT,
+          labelFontSize: 10,
+          titleFontSize: 10,
+        },
         range: { category: CATEGORY_COLORS },
         mark: { color: CATEGORY_COLORS[0] },
         arc: { fill: CATEGORY_COLORS[0] },
@@ -111,5 +127,8 @@ export default function FairChart({ chart }: { chart: ChartSpec }) {
     );
   }
 
-  return <div ref={containerRef} className="w-full" />;
+  // Safety net beyond the legend fix above: any other edge case (a long title, long axis
+  // labels on a nominal axis) scrolls horizontally within its own box instead of breaking the
+  // page layout.
+  return <div ref={containerRef} className="w-full max-w-full overflow-x-auto" />;
 }

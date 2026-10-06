@@ -60,6 +60,20 @@ A thin wrapper — Electron launches the same `next dev` server in the backgroun
 native window pointed at it. No code changes from the web version; same `claude` CLI
 requirement (and the same single-machine-only caveat below) still applies.
 
+On Linux, Electron needs a handful of system libraries (NSS, ALSA, ...) that aren't always
+preinstalled — if it fails with an `error while loading shared libraries` message, run:
+```bash
+sudo npx playwright install-deps
+```
+(installs the missing OS packages for your exact distro; doesn't install Playwright itself as
+a dependency of this project, just borrows its installer).
+
+To avoid typing `npm run electron` every time, install a desktop launcher entry (adds it to
+your application menu with its own icon):
+```bash
+electron/install-launcher.sh
+```
+
 ## Project structure
 
 ```
@@ -69,6 +83,8 @@ lib/schema.ts             the shared Zod schema (+ mirrored JSON Schema for --js
 lib/claude-cli.ts         the claude CLI subprocess wrapper: temp file, system prompt, parsing
 components/FairChart.tsx  renders one chart spec via vega-embed, enforces the zero-baseline rule
 electron/main.js          the desktop wrapper: launches next dev, opens a window pointed at it
+electron/launch.sh        double-click/launcher entry point (used by the installed launcher)
+electron/install-launcher.sh  installs a desktop menu entry pointing at launch.sh
 ```
 
 ## Notes

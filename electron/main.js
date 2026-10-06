@@ -78,6 +78,7 @@ async function createWindow() {
     minWidth: 760,
     minHeight: 560,
     title: "Second Opinion",
+    icon: path.join(__dirname, "icon.png"),
     backgroundColor: "#bfd9d2", // matches the app's own "desk" background token
     webPreferences: {
       contextIsolation: true,
@@ -98,6 +99,13 @@ async function createWindow() {
 }
 
 app.whenReady().then(() => {
+  // On macOS the BrowserWindow `icon` option doesn't reach the Dock in an unpackaged run —
+  // this is the one that does, during development; a packaged build sets it via the .icns
+  // bundled into the .app instead.
+  if (process.platform === "darwin" && app.dock) {
+    app.dock.setIcon(path.join(__dirname, "icon.png"));
+  }
+
   startNextServer();
   createWindow();
 

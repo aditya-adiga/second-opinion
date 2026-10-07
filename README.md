@@ -4,6 +4,25 @@ A chart fairness check. Upload a chart or graph and Claude reads the real data o
 redraws it honestly — zero baseline, one axis, fair color — instead of just telling you
 something looks off.
 
+![The Second Opinion app, before uploading a chart](pics/app-empty.png)
+
+## Example
+
+Reuters' well-known "Gun deaths in Florida" chart flips its y-axis (0 at the top) and fills the
+space above the line in red, so the rise in deaths after 2005 looks like a fall:
+
+<img src="pics/example-original.png" alt="Original Reuters chart with an inverted y-axis" width="420">
+
+Second Opinion reads the yearly values off the image, explains what's misleading, and redraws
+it on an upright axis starting at zero, flagging that the values were estimated from the image:
+
+![The redrawn chart with an upright, zero-based axis](pics/example-redraw.png)
+
+It then lists what was wrong with the original and the perception principles behind each issue,
+with citations:
+
+![The list of issues and the principles that explain them](pics/example-explanation.png)
+
 ## Why
 
 Color, saturation, scale, and framing all shape how a chart is read — and the same techniques

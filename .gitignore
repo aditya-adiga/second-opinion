@@ -39,7 +39,7 @@ yarn-error.log*
 # scratch files used while developing this project
 .test-assets
 
-# course material (copyrighted lecture slides) — kept locally for reference, not published
+# local reference material — not published
 /reference
 
 # short-lived uploads handed to the claude CLI subprocess (lib/claude-cli.ts) — the

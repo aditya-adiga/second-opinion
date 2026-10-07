@@ -6,10 +6,9 @@ something looks off.
 
 ## Why
 
-A Data Visualization course's "Human Perception" lecture covers how color, saturation, scale,
-and framing can be used to shape how a chart is read — and that the same techniques can be used
-to mislead. This is the countermeasure: a tool that reads a chart's actual data and shows it
-fairly, so you can judge for yourself whether the original was being straight with you.
+Color, saturation, scale, and framing all shape how a chart is read — and the same techniques
+can be used to mislead. This is the countermeasure: a tool that reads a chart's actual data and
+shows it fairly, so you can judge for yourself whether the original was being straight with you.
 
 Grounded in the graphical-perception research literature — Cleveland & McGill's ranking of
 elementary perceptual tasks, Stevens' power law, Tufte's Lie Factor, Borland & Taylor on

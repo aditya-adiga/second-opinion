@@ -21,9 +21,12 @@ freely and cites whichever real principles actually explain what it found, case 
 - **Upload** an image, optionally with some **context** (e.g. "this is from a marketing deck,"
   or "the real axis min is 50").
 - The backend shells out to the **`claude` CLI** — no Anthropic API key, no SDK. It passes the
-  image to a one-shot, tool-restricted (`Read`-only), non-interactive Claude Code session with
-  a system prompt framing it as a senior data-visualization expert, and a `--json-schema`
-  constraint so the response comes back as structured JSON rather than free text.
+  image to a one-shot, tool-restricted (`Read` + `Skill` only), non-interactive Claude Code
+  session with a system prompt framing it as a senior data-visualization expert, and a
+  `--json-schema` constraint so the response comes back as structured JSON rather than free text.
+- That session is told to load Claude Code's built-in **`dataviz` skill** first and follow it
+  for every chart it builds: its form heuristic picks the mark and encoding, and its palette and
+  color rules set the colors.
 - Claude reads the real underlying data as faithfully as it can and reconstructs it as one or
   more charts — genuinely free-form ones. Each chart is a real [Vega-Lite](https://vega.github.io/vega-lite/)
   spec fragment (any mark type, any encoding), not a fixed bar-or-line template, rendered
